@@ -3,4 +3,4 @@ display_name: GitHubWeekly
 desc: 获取 GitHub 最近一周的热门项目。 
 version: v0.0.1 
 author: OKOKOK-OKOKOK
-repo:  https://github.com/OKOKOK-OKOKOK/astrbot_plugin_githubweekly# 插件的仓库地址
+repo:  https://github.com/OKOKOK-OKOKOK/astrbot_plugin_githubweekly
