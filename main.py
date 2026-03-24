@@ -26,9 +26,9 @@ class MyPlugin(Star):
     async def initialize(self):
         """插件初始化方法"""
         from astrbot.core.utils.astrbot_path import get_astrbot_data_path
-        # todo 路径问题
         
-        self.cache_file = get_astrbot_data_path() / "plugin_data" / self.name / "rss_cache.json"
+        data_path = Path(get_astrbot_data_path())
+        self.cache_file = data_path / "plugin_data" / self.name / "rss_cache.json"
         self.cache_file.parent.mkdir(parents=True, exist_ok=True)
         
         logger.info(f"GitHubWeekly插件初始化完成，缓存文件路径: {self.cache_file}")
