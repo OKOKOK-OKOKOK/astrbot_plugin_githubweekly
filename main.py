@@ -225,6 +225,20 @@ class MyPlugin(Star):
         else:
             yield event.plain_result("❌ 未知命令，使用 /githubweekly 查看帮助")
 
+
+    @filter.command("githubweekly latest")
+    async def githubweekly_latest(self, event: AstrMessageEvent):
+        """
+        获取最新周报
+        """
+        user_name = event.get_sender_name()
+        message_str = event.message_str
+        message_chain = event.get_messages()
+        logger.info(message_chain)
+
+        async for result in self.cmd_latest(event):
+            yield result
+
     async def cmd_latest(self, event: AstrMessageEvent):
         """获取最新周报"""
         logger.info(f"用户 {event.get_sender_name()} 请求获取最新周报")
