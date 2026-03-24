@@ -186,8 +186,13 @@ class MyPlugin(Star):
 
     @filter.command("githubweekly")
     async def githubweekly(self, event: AstrMessageEvent):
-        """GitHub Weekly 主命令"""
-        message_str = event.message_str.strip()
+        """
+        GitHub Weekly 主命令
+        """
+        user_name = event.get_sender_name()
+        message_str = event.message_str
+        message_chain = event.get_messages()
+        logger.info(message_chain)
         
         if not message_str:
             yield event.plain_result("📰 GitHub Weekly 使用帮助\n\n"
