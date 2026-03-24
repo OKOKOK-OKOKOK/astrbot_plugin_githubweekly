@@ -184,62 +184,13 @@ class MyPlugin(Star):
             except Exception as e:
                 logger.error(f"向用户 {user_origin} 推送失败: {e}")
 
-    @filter.command("githubweekly")
-    async def githubweekly(self, event: AstrMessageEvent):
-        """
-        GitHub Weekly 主命令
-        """
-        user_name = event.get_sender_name()
-        message_str = event.message_str
-        message_chain = event.get_messages()
-        logger.info(message_chain)
-        
-        if not message_str:
-            yield event.plain_result("📰 GitHub Weekly 使用帮助\n\n"
-                                    "🔹 /githubweekly latest - 获取最新周报\n"
-                                    "🔹 /githubweekly list [N] - 列出往期周报（默认10条）\n"
-                                    "🔹 /githubweekly subscribe - 订阅每日推送\n"
-                                    "🔹 /githubweekly unsubscribe - 取消订阅\n"
-                                    "🔹 /githubweekly status - 查看订阅状态")
-            return
-        
-        parts = message_str.split()
-        command = parts[0].lower()
-        
-        if command == "latest":
-            async for result in self.cmd_latest(event):
-                yield result
-        elif command == "list":
-            count = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else DEFAULT_LIST_COUNT
-            async for result in self.cmd_list(event, count):
-                yield result
-        elif command == "subscribe":
-            async for result in self.cmd_subscribe(event):
-                yield result
-        elif command == "unsubscribe":
-            async for result in self.cmd_unsubscribe(event):
-                yield result
-        elif command == "status":
-            async for result in self.cmd_status(event):
-                yield result
-        else:
-            yield event.plain_result("❌ 未知命令，使用 /githubweekly 查看帮助")
+    @filter.command_group("githubweekly")
+    def githubweekly(self):
+        """GitHub Weekly 指令组"""
+        pass
 
-
-    @filter.command("githubweekly latest")
+    @githubweekly.command("latest")
     async def githubweekly_latest(self, event: AstrMessageEvent):
-        """
-        获取最新周报
-        """
-        user_name = event.get_sender_name()
-        message_str = event.message_str
-        message_chain = event.get_messages()
-        logger.info(message_chain)
-
-        async for result in self.cmd_latest(event):
-            yield result
-
-    async def cmd_latest(self, event: AstrMessageEvent):
         """获取最新周报"""
         logger.info(f"用户 {event.get_sender_name()} 请求获取最新周报")
         
@@ -259,7 +210,8 @@ class MyPlugin(Star):
         yield event.plain_result(message)
         logger.info(f"已向用户 {event.get_sender_name()} 发送最新周报")
 
-    async def cmd_list(self, event: AstrMessageEvent, count: int):
+    @githubweekly.command("list")
+    async def githubweekly_list(self, event: AstrMessageEvent, count: int = DEFAULT_LIST_COUNT):
         """列出往期周报"""
         logger.info(f"用户 {event.get_sender_name()} 请求列出 {count} 条往期周报")
         
@@ -280,7 +232,8 @@ class MyPlugin(Star):
         yield event.plain_result(message)
         logger.info(f"已向用户 {event.get_sender_name()} 发送 {len(entries)} 条往期周报")
 
-    async def cmd_subscribe(self, event: AstrMessageEvent):
+    @githubweekly.command("subscribe")
+    async def githubweekly_subscribe(self, event: AstrMessageEvent):
         """订阅每日推送"""
         user_origin = event.unified_msg_origin
         user_name = event.get_sender_name()
@@ -296,7 +249,8 @@ class MyPlugin(Star):
         yield event.plain_result("✅ 订阅成功！您将在每天12:00收到最新周报推送")
         logger.info(f"用户 {user_name} 已订阅每日推送")
 
-    async def cmd_unsubscribe(self, event: AstrMessageEvent):
+    @githubweekly.command("unsubscribe")
+    async def githubweekly_unsubscribe(self, event: AstrMessageEvent):
         """取消订阅"""
         user_origin = event.unified_msg_origin
         user_name = event.get_sender_name()
@@ -312,7 +266,8 @@ class MyPlugin(Star):
         yield event.plain_result("✅ 已取消订阅")
         logger.info(f"用户 {user_name} 已取消订阅")
 
-    async def cmd_status(self, event: AstrMessageEvent):
+    @githubweekly.command("status")
+    async def githubweekly_status(self, event: AstrMessageEvent):
         """查看订阅状态"""
         user_origin = event.unified_msg_origin
         user_name = event.get_sender_name()
